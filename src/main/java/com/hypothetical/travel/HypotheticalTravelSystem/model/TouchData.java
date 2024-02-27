@@ -1,6 +1,6 @@
 package com.hypothetical.travel.HypotheticalTravelSystem.model;
 
-import com.hypothetical.travel.HypotheticalTravelSystem.utils.LocalDateConverter;
+import com.hypothetical.travel.HypotheticalTravelSystem.utils.LocalDateTimeConverter;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class TouchData {
     @CsvBindByPosition(position = 0)
     private String id;
 
-    @CsvCustomBindByPosition(position = 1, converter = LocalDateConverter.class)
+    @CsvCustomBindByPosition(position = 1, converter = LocalDateTimeConverter.class)
     private LocalDateTime localDateTime;
 
     @CsvBindByPosition(position = 2)

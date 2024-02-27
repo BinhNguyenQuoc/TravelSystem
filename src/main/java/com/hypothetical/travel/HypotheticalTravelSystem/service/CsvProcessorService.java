@@ -24,7 +24,7 @@ public class CsvProcessorService {
         this.resourceLoader = resourceLoader;
     }
 
-    public List<TouchData>  readFromCsv(String fileName) throws Exception {
+    public List<TouchData> readFromCsv(String fileName) {
         Resource resource = resourceLoader.getResource("classpath:" + fileName);
         try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
             reader.readNext();// remove header

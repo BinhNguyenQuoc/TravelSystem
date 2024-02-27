@@ -1,28 +1,42 @@
 package com.hypothetical.travel.HypotheticalTravelSystem.model;
 
+import com.hypothetical.travel.HypotheticalTravelSystem.utils.LocalDateTimeConverter;
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Trips {
 
+    @CsvCustomBindByPosition(position = 0, converter = LocalDateTimeConverter.class)
     private LocalDateTime started;
 
+    @CsvCustomBindByPosition(position = 1, converter = LocalDateTimeConverter.class)
     private LocalDateTime finished;
 
+    @CsvBindByPosition(position = 2)
     private long durationSec;
 
+    @CsvBindByPosition(position = 3)
     private String fromStopId;
 
+    @CsvBindByPosition(position = 4)
     private String toStopId;
 
+    @CsvBindByPosition(position = 5)
     private double chargeAmount;
 
+    @CsvBindByPosition(position = 6)
     private String companyId;
 
+    @CsvBindByPosition(position = 7)
     private String busId;
 
+    @CsvBindByPosition(position = 8)
     private String hashedPan;
 
+    @CsvBindByPosition(position = 9)
     private String status;
 
     public LocalDateTime getStarted() {
