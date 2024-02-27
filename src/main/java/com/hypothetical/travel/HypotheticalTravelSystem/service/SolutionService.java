@@ -24,7 +24,7 @@ public class SolutionService {
         List<Trips> completedTrips = tripProcessor.getCompletedTrips(data);
         List<Trips> unprocessedTrips = tripProcessor.getUnprocessedTrips(data);
         tripPrintService.printCompleteTrip(completedTrips);
-        tripPrintService.printCompleteTrip(unprocessedTrips);
+        tripPrintService.printUnproceseedTrip(unprocessedTrips);
         tripPrintService.printSummaryTrip(completedTrips, unprocessedTrips);
     }
 }

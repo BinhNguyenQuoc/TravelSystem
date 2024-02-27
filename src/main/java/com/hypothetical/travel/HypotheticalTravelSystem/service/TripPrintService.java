@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -67,17 +64,17 @@ public class TripPrintService {
                 .toList();
 
         List<String[]> list = data.stream()
-                .map(export ->{
+                .map(export -> {
                     String started = (export.getStarted() == null) ? "" : export.getStarted().format(formatter);
                     String finish = (export.getFinished() == null) ? "" : export.getFinished().format(formatter);
                     return new String[]{
                             started,
                             finish,
-                        String.valueOf(export.getDurationSec()),
-                        export.getFromStopId(),
-                        export.getToStopId(),
-                        String.valueOf(export.getChargeAmount()),
-                        export.getCompanyId(), export.getBusId(), export.getHashedPan(), export.getStatus()};
+                            String.valueOf(export.getDurationSec()),
+                            export.getFromStopId(),
+                            export.getToStopId(),
+                            String.valueOf(export.getChargeAmount()),
+                            export.getCompanyId(), export.getBusId(), export.getHashedPan(), export.getStatus()};
                 })
                 .toList();
         fileService.writeToCsv(header, list, folder + "/unprocessableTouchData.csv");
@@ -93,90 +90,27 @@ public class TripPrintService {
                 .filter(c -> c.getStatus().equals(TripStatus.COMPLETED.getValue()))
                 .collect(Collectors.groupingBy(Trips::getDateOnly,
                         Collectors.groupingBy(Trips::getCompanyId,
-                                Collectors.groupingBy(Trips::getBusId,
+                                Collectors.groupingBy(Trips::getBusIdAndStopAndTime,
                                         Collectors.groupingByConcurrent(Trips::getChargeAmount, Collectors.counting())))));
 
         Map<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> map2 = completedList.stream()
                 .filter(c -> c.getStatus().equals(TripStatus.INCOMPLETED.getValue()))
                 .collect(Collectors.groupingBy(Trips::getDateOnly,
                         Collectors.groupingBy(Trips::getCompanyId,
-                                Collectors.groupingBy(Trips::getBusId,
+                                Collectors.groupingBy(Trips::getBusIdAndStopAndTime,
                                         Collectors.groupingByConcurrent(Trips::getChargeAmount, Collectors.counting())))));
 
         Map<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> map3 = unprocessedList.stream()
                 .filter(c -> c.getStatus().equals(TripStatus.CANCELLED.getValue()))
                 .collect(Collectors.groupingBy(Trips::getDateOnly,
                         Collectors.groupingBy(Trips::getCompanyId,
-                                Collectors.groupingBy(Trips::getBusId,
+                                Collectors.groupingBy(Trips::getBusIdAndStopAndTime,
                                         Collectors.groupingByConcurrent(Trips::getChargeAmount, Collectors.counting())))));
 
 
-        for (Map.Entry<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> date : map1.entrySet()) {
-            Map<String, Map<String, ConcurrentMap<Double, Long>>> value = date.getValue();
-            for (Map.Entry<String, Map<String, ConcurrentMap<Double, Long>>> company : value.entrySet()) {
-                Map<String, ConcurrentMap<Double, Long>> bus = company.getValue();
-                for (Map.Entry<String, ConcurrentMap<Double, Long>> charge : bus.entrySet()) {
-                    double totalCharge = 0.0;
-                    for (ConcurrentMap.Entry<Double, Long> count : charge.getValue().entrySet()) {
-                        totalCharge += count.getKey();
-                    }
-                    list.add(new Summary(
-                            date.getKey(),
-                            company.getKey(),
-                            charge.getKey(),
-                            charge.getValue().entrySet().size(),
-                            0,
-                            0,
-                            totalCharge));
-                }
-
-            }
-        }
-
-        for (Map.Entry<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> date : map2.entrySet()) {
-            Map<String, Map<String, ConcurrentMap<Double, Long>>> value = date.getValue();
-            for (Map.Entry<String, Map<String, ConcurrentMap<Double, Long>>> company : value.entrySet()) {
-                Map<String, ConcurrentMap<Double, Long>> bus = company.getValue();
-                for (Map.Entry<String, ConcurrentMap<Double, Long>> charge : bus.entrySet()) {
-                    double totalCharge = 0.0;
-                    for (ConcurrentMap.Entry<Double, Long> count : charge.getValue().entrySet()) {
-                        totalCharge += count.getKey();
-                    }
-                    list.add(new Summary(
-                            date.getKey(),
-                            company.getKey(),
-                            charge.getKey(),
-                            0,
-                            charge.getValue().entrySet().size(),
-                            0,
-                            totalCharge));
-
-                }
-
-            }
-        }
-
-        for (Map.Entry<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> date : map3.entrySet()) {
-            Map<String, Map<String, ConcurrentMap<Double, Long>>> value = date.getValue();
-            for (Map.Entry<String, Map<String, ConcurrentMap<Double, Long>>> company : value.entrySet()) {
-                Map<String, ConcurrentMap<Double, Long>> bus = company.getValue();
-                for (Map.Entry<String, ConcurrentMap<Double, Long>> charge : bus.entrySet()) {
-                    double totalCharge = 0.0;
-                    for (ConcurrentMap.Entry<Double, Long> count : charge.getValue().entrySet()) {
-                        totalCharge += count.getKey();
-                    }
-                    list.add(new Summary(
-                            date.getKey(),
-                            company.getKey(),
-                            charge.getKey(),
-                            0,
-                            0,
-                            charge.getValue().entrySet().size(),
-                            totalCharge));
-                }
-
-            }
-        }
+        buildData(map1, list, 0);
+        buildData(map2, list, 1);
+        buildData(map3, list, 2);
 
         List<Summary> sortedList = list.stream()
                 .sorted(Comparator.comparing(Summary::getDate)
@@ -201,6 +135,64 @@ public class TripPrintService {
         );
 
         fileService.writeToCsv(header, outputList, folder + "/summary.csv");
+    }
+
+    private static void buildData(Map<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> map1, List<Summary> list, int index) {
+        for (Map.Entry<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> date : map1.entrySet()) {
+            for (Map.Entry<String, Map<String, ConcurrentMap<Double, Long>>> bus : date.getValue().entrySet()) {
+                Map<String, Double> mapCharge = new HashMap<>();
+                Map<String, Integer> mapCount = new HashMap<>();
+                int i = 0;
+                for (Map.Entry<String, ConcurrentMap<Double, Long>> busCharge : bus.getValue().entrySet()) {
+                    i = 0;
+                    String busId = busCharge.getKey().split("_")[0];
+                    if (mapCount.get(busId) == null) {
+                        mapCount.put(busId, ++i);
+                    } else {
+                        mapCount.put(busId, mapCount.get(busId) + 1);
+                    }
+                    for (ConcurrentMap.Entry<Double, Long> count : busCharge.getValue().entrySet()) {
+                        if (mapCharge.get(busId) == null) {
+                            mapCharge.put(busId, count.getKey());
+                        } else {
+                            double sum = mapCharge.get(busId) + count.getKey();
+                            mapCharge.put(busId, sum);
+                        }
+                    }
+                }
+                for (Map.Entry<String, Double> data : mapCharge.entrySet()) {
+                    if (index == 0) {
+                        list.add(new Summary(
+                                date.getKey(),
+                                bus.getKey(),
+                                data.getKey(),
+                                mapCount.get(data.getKey()),
+                                0,
+                                0,
+                                data.getValue()));
+                    } else if (index == 1) {
+                        list.add(new Summary(
+                                date.getKey(),
+                                bus.getKey(),
+                                data.getKey(),
+                                0,
+                                mapCount.get(data.getKey()),
+                                0,
+                                data.getValue()));
+                    } else if (index == 2) {
+                        list.add(new Summary(
+                                date.getKey(),
+                                bus.getKey(),
+                                data.getKey(),
+                                0,
+                                0,
+                                mapCount.get(data.getKey()),
+                                data.getValue()));
+
+                    }
+                }
+            }
+        }
     }
 
 

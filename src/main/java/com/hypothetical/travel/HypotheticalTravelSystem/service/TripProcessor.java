@@ -85,6 +85,7 @@ public class TripProcessor {
     private void handleTouchOff(TouchData touchData, Map<String, Trips> map) {
         Trips trip = map.get(touchData.getCompanyId());
         if (trip != null) {
+            trip.setBusId(touchData.getBusId());
             trip.setToStopId(touchData.getStopID());
             trip.setChargeAmount(tripCalculator.calculateChargeAmount(trip.getFromStopId(), trip.getToStopId()));
             trip.setFinished(touchData.getLocalDateTime());

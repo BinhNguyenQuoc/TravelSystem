@@ -39,6 +39,10 @@ public class Trips {
     @CsvBindByPosition(position = 9)
     private String status;
 
+    public String getBusIdAndStopAndTime() {
+        return busId + "_" + toStopId + "_" + started.toString();
+    }
+
     public LocalDateTime getStarted() {
         return started;
     }
