@@ -6,6 +6,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,10 @@ public class CsvProcessorService {
         this.resourceLoader = resourceLoader;
     }
 
+    private final Logger logger = LoggerFactory.getLogger(TripProcessor.class);
+
     public List<TouchData> readFromCsv(String fileName) {
+        logger.info("Reading and parsing filename: {}", fileName);
         Resource resource = resourceLoader.getResource("classpath:" + fileName);
         try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
             reader.readNext();// remove header
@@ -35,8 +40,9 @@ public class CsvProcessorService {
                     .withSeparator(',')
                     .build();
             return csvToBean.parse();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception ex) {
+            logger.error("Error while reading and parsing filename: {}", ex.getMessage(), ex);
+            throw new RuntimeException(ex);
         }
     }
 

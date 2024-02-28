@@ -34,19 +34,19 @@ public class SolutionService {
         try {
             tripPrintService.printCompleteTrip(completedTrips);
         } catch (Exception ex) {
-            logger.error("Error happens while printing the complete trips: " + ex.getMessage(), ex);
+            logger.error("Error happens while printing the complete trips: {}", ex.getMessage(), ex);
         }
 
         try {
             tripPrintService.printUnprocessedTrip(unprocessedTrips);
         } catch (Exception ex) {
-            logger.error("Error happens while printing the unprocessed trips: " + ex.getMessage(), ex);
+            logger.error("Error happens while printing the unprocessed trips: {}", ex.getMessage(), ex);
         }
 
         try {
             tripPrintService.printSummaryTrip(completedTrips, unprocessedTrips);
         } catch (Exception ex) {
-            logger.error("Error happens while printing the summary trips: " + ex.getMessage(), ex);
+            logger.error("Error happens while printing the summary trips: {}", ex.getMessage(), ex);
         }
     }
 }
