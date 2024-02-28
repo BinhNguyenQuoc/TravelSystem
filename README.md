@@ -15,14 +15,16 @@ Key Concepts:
 
 ## Additional Data Assumption:
 - 1: File touchData.csv is already sorted by datetime, companyId, Touch On then Touch Off
-- 2: One company can go back and forth may time in 1 date - see Company1. But the report should exclude duplicate record.
+- 2: One companyID can go back and forth many times in 1 date - see Company1. But the report should exclude duplicate record.
 - 3: The complete trip is considered by the data of the OFF touch, it means if the PAN is wrong in the ON trip, it is successful in the OFF trip.
-- 4: To export into file with a good view, data is sorted by date and company and bus in advance
+- 4: To export to file with a good data view, data is sorted by date and company and bus in advance
+
 
 ## Implementation:
 - To have less code to read data from file to java object, we are using Opencsv to mapping the data with customized fields.
-- We assume data is less than 100MB to easy handle it in memory than using more streaming approach like kafka, database to store it
+- We assume data is less than 50MB to easy handle it in memory than using more streaming approach like kafka, database to store it
 - Base on Java feature, we use the Java stream to group data by date, company, bus and the total chargeAmount for 1 bus
+- If we need to process multiple files and big files, we have to change to use kafka or store database then get data from database, or we can use python to process file better the send to kafka or call RESTFul API to Java process each record.
 
 ## Building
 
