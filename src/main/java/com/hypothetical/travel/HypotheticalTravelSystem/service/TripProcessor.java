@@ -1,9 +1,12 @@
 package com.hypothetical.travel.HypotheticalTravelSystem.service;
 
+import com.hypothetical.travel.HypotheticalTravelSystem.HypotheticalTravelSystemApplication;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.TouchData;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.TouchType;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.TripStatus;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.Trips;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,8 @@ import static com.hypothetical.travel.HypotheticalTravelSystem.utils.Utilities.i
 
 @Service
 public class TripProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(TripProcessor.class);
 
     @Autowired
     TripCalculator tripCalculator;
@@ -44,6 +49,7 @@ public class TripProcessor {
     }
 
     private void buildFullTrips(List<TouchData> dataFromCSV) {
+        logger.info("Start to build the full trip");
         List<Trips> trips = new ArrayList<>();
         Map<String, Trips> map = new HashMap<>();
         dataFromCSV
@@ -61,6 +67,7 @@ public class TripProcessor {
                         .thenComparing(Trips::getCompanyId)
                         .thenComparing(Trips::getBusId))
                 .toList();
+        logger.info("Complete to build the full trip, with strip size {}", fullTrips.size());
     }
 
     private void handleTouchOn(TouchData touchData, Map<String, Trips> map, List<Trips> trips) {
@@ -79,7 +86,8 @@ public class TripProcessor {
 
         trip.setChargeAmount(tripCalculator.calculateChargeAmount(trip.getFromStopId(), trip.getToStopId()));
         map.put(trip.getCompanyId(), trip);
-        if (trips.stream().noneMatch(c -> c.getStarted().isEqual(trip.getStarted()) && c.getCompanyId().equals(trip.getCompanyId()))) {
+        if (trips.stream().noneMatch(c -> c.getStarted().isEqual(trip.getStarted())
+                && c.getCompanyId().equals(trip.getCompanyId()))) {
             trips.add(trip);
         }
     }

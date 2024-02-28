@@ -3,6 +3,8 @@ package com.hypothetical.travel.HypotheticalTravelSystem.service;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.Summary;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.TripStatus;
 import com.hypothetical.travel.HypotheticalTravelSystem.model.Trips;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,12 @@ public class TripPrintService {
     @Autowired
     CsvProcessorService fileService;
 
+    private final Logger logger = LoggerFactory.getLogger(TripProcessor.class);
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     public void printCompleteTrip(List<Trips> trips) throws IOException {
+        logger.info("Printing the completed trips");
         String[] header = {"started", "finished", "DurationSec", "fromStopId", "toStopId",
                 "ChargeAmount", "CompanyId", "BusId", "HashedPan", "Status"};
 
@@ -51,9 +56,11 @@ public class TripPrintService {
                 })
                 .toList();
         fileService.writeToCsv(header, list, folder + "/trips.csv");
+        logger.info("Complete to print the completed trips");
     }
 
-    public void printUnproceseedTrip(List<Trips> trips) throws IOException {
+    public void printUnprocessedTrip(List<Trips> trips) throws IOException {
+        logger.info("Printing the unprocessed trips");
         String[] header = {"started", "finished", "DurationSec", "fromStopId", "toStopId",
                 "ChargeAmount", "CompanyId", "BusId", "HashedPan", "Status"};
         List<Trips> data = trips.stream()
@@ -78,9 +85,11 @@ public class TripPrintService {
                 })
                 .toList();
         fileService.writeToCsv(header, list, folder + "/unprocessableTouchData.csv");
+        logger.info("Complete to print the unprocessed trips");
     }
 
     public void printSummaryTrip(List<Trips> completedList, List<Trips> unprocessedList) throws IOException {
+        logger.info("Printing the summary trips");
         String[] header = {"date", "CompanyId", "BusId", "CompleteTripCount", "IncompleteTripCount",
                 "CancelledTripCount", "TotalCharges"};
 
@@ -135,6 +144,7 @@ public class TripPrintService {
         );
 
         fileService.writeToCsv(header, outputList, folder + "/summary.csv");
+        logger.info("Complete to print the summary trips");
     }
 
     private static void buildData(Map<LocalDate, Map<String, Map<String, ConcurrentMap<Double, Long>>>> map1, List<Summary> list, int index) {

@@ -108,7 +108,7 @@ public class FileReadingTest {
     public void testUnProcessedTrip() throws IOException, InterruptedException {
         List<TouchData> touchDataTest = fileService.readFromCsv("touchDataTest.csv");
         List<Trips> trips = tripProcessor.getUnprocessedTrips(touchDataTest);
-        tripPrintService.printUnproceseedTrip(trips);
+        tripPrintService.printUnprocessedTrip(trips);
 
         assertNotNull(trips);
         assertEquals(trips.size(), 4);

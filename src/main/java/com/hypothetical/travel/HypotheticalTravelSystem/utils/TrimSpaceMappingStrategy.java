@@ -7,6 +7,9 @@ import com.opencsv.exceptions.CsvFieldAssignmentException;
 
 import java.util.Arrays;
 
+/**
+    This class is mainly to trim the data of column, we can add more logic here
+ **/
 public class TrimSpaceMappingStrategy <T> extends ColumnPositionMappingStrategy<T> {
 
     public TrimSpaceMappingStrategy(Class<T> type) {
@@ -19,6 +22,4 @@ public class TrimSpaceMappingStrategy <T> extends ColumnPositionMappingStrategy<
                 .toArray(String[]::new);
         return super.populateNewBean(trimmedLine);
     }
-
-    // Implement other methods of MappingStrategy interface as needed
 }
