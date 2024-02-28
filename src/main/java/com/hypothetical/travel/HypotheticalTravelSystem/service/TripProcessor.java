@@ -21,8 +21,8 @@ public class TripProcessor {
 
     private List<Trips> fullTrips = null;
 
-    public List<Trips> getCompletedTrips(List<TouchData> dataFromCSV ){
-        if(fullTrips == null) {
+    public List<Trips> getCompletedTrips(List<TouchData> dataFromCSV) {
+        if (fullTrips == null) {
             buildFullTrips(dataFromCSV);
         }
         return fullTrips.stream()
@@ -31,11 +31,11 @@ public class TripProcessor {
                 .toList();
     }
 
-    public List<Trips> getUnprocessedTrips(List<TouchData> dataFromCSV ){
-        if(fullTrips == null) {
+    public List<Trips> getUnprocessedTrips(List<TouchData> dataFromCSV) {
+        if (fullTrips == null) {
             buildFullTrips(dataFromCSV);
         }
-        return  fullTrips.stream()
+        return fullTrips.stream()
                 .filter(c -> c.getStatus().equals(TripStatus.UNPROCESSED_NO_PAN.getValue())
                         || c.getStatus().equals(TripStatus.WRONG_DATE_TIME.getValue())
                         || c.getStatus().equals(TripStatus.MISSING_DATA.getValue())
@@ -43,7 +43,7 @@ public class TripProcessor {
                 .toList();
     }
 
-    private void buildFullTrips( List<TouchData> dataFromCSV ) {
+    private void buildFullTrips(List<TouchData> dataFromCSV) {
         List<Trips> trips = new ArrayList<>();
         Map<String, Trips> map = new HashMap<>();
         dataFromCSV
@@ -79,7 +79,9 @@ public class TripProcessor {
 
         trip.setChargeAmount(tripCalculator.calculateChargeAmount(trip.getFromStopId(), trip.getToStopId()));
         map.put(trip.getCompanyId(), trip);
-        trips.add(trip);
+        if (trips.stream().noneMatch(c -> c.getStarted().isEqual(trip.getStarted()) && c.getCompanyId().equals(trip.getCompanyId()))) {
+            trips.add(trip);
+        }
     }
 
     private void handleTouchOff(TouchData touchData, Map<String, Trips> map) {

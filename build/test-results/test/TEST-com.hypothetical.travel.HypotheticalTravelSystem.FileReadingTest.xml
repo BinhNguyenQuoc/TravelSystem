@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-02-27T11:57:25" hostname="VNPC016444" time="1.412">
+<testsuite name="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-02-27T12:08:01" hostname="VNPC016444" time="1.133">
   <properties/>
-  <testcase name="testSummaryTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="1.334"/>
-  <testcase name="testUnProcessedTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="0.034"/>
-  <testcase name="testTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="0.043"/>
+  <testcase name="testSummaryTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="1.065"/>
+  <testcase name="testUnProcessedTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="0.038"/>
+  <testcase name="testTrip()" classname="com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest" time="0.029"/>
   <system-out><![CDATA[Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
-18:57:24.166 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest]: FileReadingTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-18:57:24.301 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.hypothetical.travel.HypotheticalTravelSystem.HypotheticalTravelSystemApplication for test class com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest
+19:08:00.136 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest]: FileReadingTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:08:00.261 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.hypothetical.travel.HypotheticalTravelSystem.HypotheticalTravelSystemApplication for test class com.hypothetical.travel.HypotheticalTravelSystem.FileReadingTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -16,9 +16,9 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.2)
 
-2024-02-27T18:57:24.796+07:00  INFO 90629 --- [    Test worker] c.h.t.H.FileReadingTest                  : Starting FileReadingTest using Java 17.0.10 with PID 90629 (started by bhnn in /Users/bhnn/Documents/Projects/data/TravelSystem)
-2024-02-27T18:57:24.798+07:00  INFO 90629 --- [    Test worker] c.h.t.H.FileReadingTest                  : No active profile set, falling back to 1 default profile: "default"
-2024-02-27T18:57:25.701+07:00  INFO 90629 --- [    Test worker] c.h.t.H.FileReadingTest                  : Started FileReadingTest in 1.22 seconds (process running for 2.914)
+2024-02-27T19:08:00.708+07:00  INFO 92804 --- [    Test worker] c.h.t.H.FileReadingTest                  : Starting FileReadingTest using Java 17.0.10 with PID 92804 (started by bhnn in /Users/bhnn/Documents/Projects/data/TravelSystem)
+2024-02-27T19:08:00.709+07:00  INFO 92804 --- [    Test worker] c.h.t.H.FileReadingTest                  : No active profile set, falling back to 1 default profile: "default"
+2024-02-27T19:08:01.303+07:00  INFO 92804 --- [    Test worker] c.h.t.H.FileReadingTest                  : Started FileReadingTest in 0.86 seconds (process running for 2.507)
 Folder created successfully.
 Folder test_output created successfully.
 ]]></system-out>
